@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>وكالة القائد - لخدمات بوبو لايف</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold-royal: #D4AF37;
+            --gold-light: #F3E5AB;
+            --dark-red: #580000;
+            --dark-crimson: #300000;
+            --bg-dark: #120000;
+            --text-light: #FFF5E1;
+            --card-bg: rgba(48, 0, 0, 0.7);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        canvas #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--dark-red), var(--dark-crimson));
+            padding: 40px 20px;
+            text-align: center;
+            border-bottom: 3px solid var(--gold-royal);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        .agency-title {
+            font-size: 2.8rem;
+            font-weight: 900;
+            color: var(--gold-royal);
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.8), 0 0 10px var(--gold-royal);
+            margin-bottom: 10px;
+        }
+
+        .agency-id {
+            background: var(--gold-royal);
+            color: var(--dark-crimson);
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(212,175,55,0.5);
+        }
+
+        .badges-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .badge {
+            background: rgba(0,0,0,0.4);
+            border: 1px solid var(--gold-royal);
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--gold-light);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            color: var(--gold-royal);
+            margin-bottom: 30px;
+            text-shadow: 0 0 5px rgba(212,175,55,0.3);
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 3px;
+            background: var(--gold-royal);
+            margin: 10px auto 0;
+            border-radius: 2px;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .service-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(212,175,55,0.2);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--gold-royal);
+            box-shadow: 0 15px 30px rgba(212,175,55,0.2);
+        }
+
+        .service-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .service-card h3 {
+            color: var(--gold-royal);
+            margin-bottom: 10px;
+            font-size: 1.4rem;
+        }
+
+        .service-price {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #fff;
+            margin-top: 15px;
+            background: rgba(0,0,0,0.3);
+            padding: 8px;
+            border-radius: 8px;
+            border-left: 4px solid var(--gold-royal);
+        }
+
+        .price-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 50px;
+        }
+
+        .price-card {
+            background: linear-gradient(145deg, rgba(88,0,0,0.6), rgba(48,0,0,0.8));
+            border: 1px solid rgba(212,175,55,0.15);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: all 0.2s ease;
+        }
+
+        .price-card:hover {
+            border-color: var(--gold-royal);
+            box-shadow: 0 0 12px rgba(212,175,55,0.3);
+        }
+
+        .coins-val {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--gold-light);
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .money-val {
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: bold;
+            background: rgba(0,0,0,0.2);
+            padding: 3px 8px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+
+        .interactive-tools {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+            align-items: start;
+        }
+
+        .tool-box {
+            background: var(--card-bg);
+            border: 2px solid rgba(212,175,55,0.2);
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--gold-light);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid rgba(212,175,55,0.3);
+            background: rgba(0,0,0,0.5);
+            color: #fff;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--gold-royal);
+            box-shadow: 0 0 8px rgba(212,175,55,0.4);
+        }
+
+        .calc-result {
+            background: rgba(0,0,0,0.4);
+            border-right: 4px solid var(--gold-royal);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .calc-result span {
+            color: var(--gold-royal);
+            font-size: 1.4rem;
+        }
+
+        .wheel-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .wheel-wrapper {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin-bottom: 20px;
+        }
+
+        .wheel-pointer {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 25px solid var(--gold-royal);
+            z-index: 10;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+        }
+
+        canvas #wheel-canvas {
+            border: 5px solid var(--gold-royal);
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(212,175,55,0.5);
+            background: var(--dark-crimson);
+            transition: transform 4s cubic-bezier(0.1, 0.8, 0.25, 1);
+        }
+
+        .btn {
+            display: inline-block;
+            width: 100%;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, var(--gold-royal), #B8860B);
+            color: var(--dark-crimson);
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(212,175,55,0.3);
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212,175,55,0.5);
+            background: linear-gradient(135deg, #F3E5AB, var(--gold-royal));
+        }
+
+        .btn:disabled {
+            background: #555;
+            color: #888;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .btn-whatsapp {
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(37,211,102,0.3);
+            margin-top: 15px;
+        }
+
+        .btn-whatsapp:hover {
+            background: linear-gradient(135deg, #20ba5a, #0e7568);
+            box-shadow: 0 6px 20px rgba(37,211,102,0.5);
+        }
+
+        .reviews-section {
+            background: rgba(48, 0, 0, 0.4);
+            border-radius: 15px;
+            padding: 30px;
+            border: 1px solid rgba(212,175,55,0.1);
+            margin-bottom: 50px;
+        }
+
+        .reviews-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .review-card {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(212,175,55,0.1);
+            border-radius: 10px;
+            padding: 20px;
+            position: relative;
+        }
+
+        .stars {
+            color: var(--gold-royal);
+            margin-bottom: 10px;
+        }
+
+        .review-text {
+            font-style: italic;
+            margin-bottom: 15px;
+            color: #e0e0e0;
+        }
+
+        .reviewer-name {
+            font-weight: 700;
+            color: var(--gold-light);
+            font-size: 0.95rem;
+        }
+
+        footer {
+            background: #0a0000;
+            text-align: center;
+            padding: 30px;
+            border-top: 2px solid var(--gold-royal);
+            font-size: 0.95rem;
+            color: #aaa;
+        }
+
+        footer strong {
+            color: var(--gold-royal);
+        }
+
+        /* Admin Fixed Button */
+        .admin-trigger-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(88,0,0,0.9);
+            border: 2px solid var(--gold-royal);
+            color: var(--gold-royal);
+            padding: 10px 15px;
+            border-radius: 30px;
+            cursor: pointer;
+            z-index: 999;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .admin-trigger-btn:hover {
+            background: var(--gold-royal);
+            color: var(--dark-crimson);
+        }
+
+        /* Modal Overlay style */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: var(--dark-crimson);
+            border: 2px solid var(--gold-royal);
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(212,175,55,0.3);
+            position: relative;
+        }
+
+        .modal-header {
+            color: var(--gold-royal);
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(212,175,55,0.2);
+            padding-bottom: 10px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .modal-close:hover {
+            color: var(--gold-royal);
+        }
+
+        #admin-panel {
+            max-height: 70vh;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .admin-section {
+            border-bottom: 1px solid rgba(212,175,55,0.1);
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+
+        .admin-section h4 {
+            color: var(--gold-light);
+            margin-bottom: 10px;
+        }
+
+        /* Utility classes */
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <canvas id="bg-canvas"></canvas>
+
+    <header>
+        <h1 class="agency-title">وكالة القـائد لخدمات بوبو لايف</h1>
+        <div class="agency-id">ID: 47355419</div>
+        <p style="color: #e0e0e0; max-width: 600px; margin: 0 auto 15px;">الوكالة المعتمدة رقم #1 لشحن، سحب أرباح، وتفعيل حسابات ومضيفين Poppo Live بأفضل الأسعار وأسرع تنفيذ.</p>
+        <div class="badges-container">
+            <div class="badge">👑 وكيل معتمد</div>
+            <div class="badge">⭐ نجم المنصة: مستوى 45</div>
+            <div class="badge">🌍 مستوى عالمي: 12</div>
+            <div class="badge">✨ شارة VIP</div>
+        </div>
+    </header>
+
+    <div class="container">
+        
+        <!-- خدماتنا المعتمدة -->
+        <h2 class="section-title">خدماتنا المعتمدة</h2>
+        <div class="services-grid">
+            <div class="service-card">
+                <span class="service-icon">💎</span>
+                <h3>شحن كوينز (Coin Seller)</h3>
+                <p>اشحن حسابك بأفضل فئة وأرخص سعر للمليون كوين في مصر.</p>
+            </div>
+            <div class="service-card">
+                <span class="service-icon">🔥</span>
+                <h3>ضرب كوينز</h3>
+                <p>حوّل واستبدل الكوينز المتوفرة لديك بأعلى سعر فوري للضرب.</p>
+                <div class="service-price" id="display-multiplier-price">سعر الضرب للمليون: 4900 ج</div>
+            </div>
+            <div class="service-card">
+                <span class="service-icon">💵</span>
+                <h3>سحب أرباحك</h3>
+                <p>استلم مستحقات التارجت ودولارات بوبو لايف كاش فوراً عبر فودافون كاش.</p>
+                <div class="service-price" id="display-withdraw-price">سعر سحب الدولار: 55 ج</div>
+            </div>
+        </div>
+
+        <!-- أسعار الشحن الحالية -->
+        <h2 class="section-title">قائمة أسعار الشحن الحالية</h2>
+        <div class="price-grid" id="prices-container">
+            <!-- ستظهر البطاقات هنا برمجياً -->
+        </div>
+
+        <!-- أدوات تفاعلية وعجلة الحظ -->
+        <div class="interactive-tools">
+            
+            <!-- حاسبة الميزانية التقديرية -->
+            <div class="tool-box">
+                <h3 style="color:var(--gold-royal); margin-bottom:15px; text-align:center;">🧮 احسب ميزانيتك التقديرية</h3>
+                <div class="form-group">
+                    <label for="calc-select">اختر باقة الشحن المطلوبة:</label>
+                    <select id="calc-select" class="form-control">
+                        <!-- الخيارات تضاف برمجياً -->
+                    </select>
+                </div>
+                <div class="calc-result">
+                    ستحصل تقريباً على: <br>
+                    <span id="calc-output">0</span> كوين بوبو
+                </div>
+                <a href="https://wa.me/201008145271" target="_blank" class="btn btn-whatsapp" style="margin-top:25px;">💬 اطلب الشحن الآن عبر الواتساب</a>
+            </div>
+
+            <!-- عجلة الحظ اليومية -->
+            <div class="tool-box wheel-container">
+                <h3 style="color:var(--gold-royal); margin-bottom:15px; text-align:center;">🎡 عجلة الحظ اليومية من القائد</h3>
+                <p style="font-size:0.9rem; text-align:center; margin-bottom:15px; color:#ccc;">لف العجلة مجاناً واربح جوائز وهدايا فورية لوكالتك!</p>
+                
+                <div class="wheel-wrapper">
+                    <div class="wheel-pointer"></div>
+                    <canvas id="wheel-canvas" width="300" height="300"></canvas>
+                </div>
+
+                <button id="spin-btn" class="btn">🎰 لف العجلة الآن</button>
+            </div>
+
+        </div>
+
+        <!-- آراء وتقييمات المضيفين والعملاء -->
+        <div class="reviews-section">
+            <h2 class="section-title">⭐ آراء وثقة عملائنا ومضيفينا</h2>
+            <div class="reviews-grid">
+                <div class="review-card">
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <p class="review-text">"أفضل وكالة شحن وسحب في مصر، التعامل سريع جداً والأدمن قمة في الأمانة والثقة."</p>
+                    <div class="reviewer-name">- كابتن أحمد (مضيف بوبو)</div>
+                </div>
+                <div class="review-card">
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <p class="review-text">"سحبت أرباح التارجت في أقل من 5 دقائق على فودافون كاش بسعر ممتاز جداً. شكراً وكالة القائد."</p>
+                    <div class="reviewer-name">- سارة الملكة (صانعة محتوى)</div>
+                </div>
+                <div class="review-card">
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <p class="review-text">"عجلة الحظ ممتازة وكسبت منها كوينز مجانية وتم الإضافة لحسابي فوراً عبر الواتساب."</p>
+                    <div class="reviewer-name">- ميدو الدولي (عميل شحن)</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>© جميع الحقوق محفوظة لـ <strong>وكالة القائد (EL-QAED AGENCY)</strong> - بوبو لايف ID: 47355419</p>
+        <p style="font-size:0.85rem; margin-top:5px; color:#777;">الأسعار والخدمات تخضع لتحديثات سوق الصرف والمنصة اليومية. تأكد دائماً من السعر الفعلي مع الأدمن قبل إرسال المبالغ.</p>
+        <div style="margin-top:15px;">
+            <a href="https://chat.whatsapp.com/GSeAyfDkfU2Le12OShTntW" target="_blank" class="btn btn-whatsapp" style="display:inline-block; width:auto; padding:8px 20px; font-size:0.95rem;">📌 انضم لجروب الوكالة الرسمي</a>
+        </div>
+    </footer>
+
+    <!-- زر لوحة التحكم الخاص بالقائد -->
+    <button class="admin-trigger-btn" onclick="openAdminAuth()">⚙️ لوحة الإدارة (خاصة بالقائد)</button>
+
+    <!-- منبثق حماية الرقم السري وقفل التحديث -->
+    <div class="modal-overlay" id="auth-modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeAuthModal()">✕</button>
+            <div class="modal-header">🔒 لوحة التحكم محمية</div>
+            <div class="form-group">
+                <label for="admin-pin">أدخل الرقم السري للوصول المباشر:</label>
+                <input type="password" id="admin-pin" class="form-control" placeholder="••••••">
+                <p id="auth-error" style="color:#ff4d4d; font-size:0.9rem; margin-top:8px; display:none;">⚠️ الرقم السري غير صحيح، يرجى المحاولة مرة أخرى.</p>
+            </div>
+            <button class="btn" onclick="verifyAdminPin()">🔓 دخول وإدخال الأسعار</button>
+        </div>
+    </div>
+
+    <!-- منبثق لوحة تحديث الأسعار الفعلية -->
+    <div class="modal-overlay" id="admin-modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeAdminModal()">✕</button>
+            <div class="modal-header">⚙️ إدارة الأسعار وتحديثها لحظياً</div>
+            <div id="admin-panel">
+                
+                <!-- تحديث أسعار الضرب والسحب -->
+                <div class="admin-section">
+                    <h4>💰 أسعار الخدمات الأساسية</h4>
+                    <div class="form-group" style="margin-bottom:12px;">
+                        <label>سعر الضرب لكل مليون كوين (ج):</label>
+                        <input type="number" id="input-multiplier" class="form-control" value="4900">
+                    </div>
+                    <div class="form-group">
+                        <label>سعر سحب الدولار (ج):</label>
+                        <input type="number" id="input-withdraw" class="form-control" value="55">
+                    </div>
+                </div>
+
+                <!-- تحديث أسعار فئات الشحن -->
+                <div class="admin-section">
+                    <h4>💎 تحديث فئات أسعار الشحن</h4>
+                    <div class="form-group" style="margin-bottom:12px;">
+                        <label>اختر فئة الشحن لتعديلها:</label>
+                        <select id="admin-charge-select" class="form-control"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>السعر الجديد لهذه الفئة بالجنيه (ج):</label>
+                        <input type="number" id="admin-charge-price" class="form-control">
+                    </div>
+                </div>
+
+                <button class="btn" onclick="saveAdminData()">💾 حفظ وتحديث الموقع فوراً</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- منبثق الفوز بجائزة عجلة الحظ -->
+    <div class="modal-overlay" id="prize-modal">
+        <div class="modal-content" style="text-align: center;">
+            <div class="modal-header">🎉 مبروك فزت معنا!</div>
+            <div style="font-size: 4rem; margin-bottom: 15px;">🎁</div>
+            <h3 id="prize-text" style="color: var(--gold-royal); margin-bottom: 20px; font-size:1.6rem;"></h3>
+            <p style="color: #ccc; margin-bottom: 20px;">اضغط على الزر أدناه لتأكيد واستلام جائزتك مباشرة من إدارة وكالة القائد عبر الواتساب.</p>
+            <a id="prize-wa-btn" href="#" target="_blank" class="btn btn-whatsapp">📱 استلام الجائزة عبر الواتساب</a>
+        </div>
+    </div>
+
+
+    <script>
+        // البيانات الرسمية المبدئية للوكالة
+        let globalPrices = {
+            multiplierPrice: 4900,
+            withdrawPrice: 55,
+            chargePackages: [
+                { coins: 8000, price: 60 },
+                { coins: 9000, price: 65 },
+                { coins: 10000, price: 70 },
+                { coins: 11000, price: 75 },
+                { coins: 11500, price: 80 },
+                { coins: 12000, price: 90 },
+                { coins: 13000, price: 95 },
+                { coins: 13500, price: 100 },
+                { coins: 14000, price: 105 },
+                { coins: 15000, price: 110 },
+                { coins: 16000, price: 115 },
+                { coins: 17000, price: 120 },
+                { coins: 18000, price: 130 },
+                { coins: 19000, price: 130 },
+                { coins: 20000, price: 135 },
+                { coins: 25000, price: 160 },
+                { coins: 30000, price: 200 },
+                { coins: 35000, price: 220 },
+                { coins: 40000, price: 250 },
+                { coins: 45000, price: 275 },
+                { coins: 50000, price: 300 },
+                { coins: 60000, price: 365 },
+                { coins: 68000, price: 415 },
+                { coins: 77000, price: 465 },
+                { coins: 86000, price: 515 },
+                { coins: 94000, price: 565 },
+                { coins: 100000, price: 600 }
+            ]
+        };
+
+        // جوائز عجلة الحظ
+        const wheelPrizes = [
+            "5,000 كوين مجاناً",
+            "خصم 10% على شحنتك القادمة",
+            "1,000 كوين مجاناً",
+            "هدايا بث مباشرة مميزة",
+            "شحن سريع مجاني",
+            "حظ أوفر المرة القادمة"
+        ];
+
+        // تهيئة المؤثرات البصرية للخلفية
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 3 + 1;
+                this.speedY = Math.random() * 1 + 0.5;
+                this.speedX = Math.random() * 0.4 - 0.2;
+                this.opacity = Math.random() * 0.6 + 0.2;
+            }
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX;
+                if (this.y > canvas.height) {
+                    this.y = -10;
+                    this.x = Math.random() * canvas.width;
+                }
+            }
+            draw() {
+                ctx.fillStyle = `rgba(212, 175, 55, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 70; i++) {
+            particles.push(new Particle());
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        // رسم عجلة الحظ
+        const wheelCanvas = document.getElementById('wheel-canvas');
+        const wheelCtx = wheelCanvas.getContext('2d');
+        const segments = wheelPrizes.length;
+        const arc = Math.PI / (segments / 2);
+
+        function drawWheel() {
+            wheelCtx.clearRect(0, 0, 300, 300);
+            for (let i = 0; i < segments; i++) {
+                const angle = i * arc;
+                wheelCtx.fillStyle = (i % 2 === 0) ? '#580000' : '#300000';
+                wheelCtx.beginPath();
+                wheelCtx.arc(150, 150, 145, angle, angle + arc, false);
+                wheelCtx.lineTo(150, 150);
+                wheelCtx.fill();
+                
+                // إضافة الإطار الذهبي للقطاع
+                wheelCtx.strokeStyle = '#D4AF37';
+                wheelCtx.lineWidth = 1.5;
+                wheelCtx.stroke();
+
+                // إضافة النصوص
+                wheelCtx.save();
+                wheelCtx.fillStyle = '#FFF5E1';
+                wheelCtx.translate(150, 150);
+                wheelCtx.rotate(angle + arc / 2);
+                wheelCtx.textAlign = "right";
+                wheelCtx.font = "bold 10px Cairo";
+                wheelCtx.fillText(wheelPrizes[i], 130, 5);
+                wheelCtx.restore();
+            }
+
+            // الدائرة المركزية الفخمة
+            wheelCtx.fillStyle = '#D4AF37';
+            wheelCtx.beginPath();
+            wheelCtx.arc(150, 150, 35, 0, Math.PI * 2, false);
+            wheelCtx.fill();
+            wheelCtx.strokeStyle = '#FFF5E1';
+            wheelCtx.lineWidth = 2;
+            wheelCtx.stroke();
+
+            wheelCtx.fillStyle = '#300000';
+            wheelCtx.textAlign = "center";
+            wheelCtx.font = "900 11px Cairo";
+            wheelCtx.fillText("القائد", 150, 154);
+        }
+        drawWheel();
+
+        // تشغيل وعمل عجلة الحظ
+        let isSpinning = false;
+        document.getElementById('spin-btn').addEventListener('click', () => {
+            if (isSpinning) return;
+            isSpinning = true;
+            document.getElementById('spin-btn').disabled = true;
+
+            const randomDegrees = Math.floor(Math.random() * 360) + 3600; // 10 دورات كاملة على الأقل
+            wheelCanvas.style.transform = `rotate(${randomDegrees}deg)`;
+
+            setTimeout(() => {
+                isSpinning = false;
+                document.getElementById('spin-btn').disabled = false;
+                
+                // حساب الجائزة الفعلية بناءً على زاوية التوقف
+                const actualDegrees = randomDegrees % 360;
+                // تعديل الحسابات لمطابقة مؤشر التوقف العلوي (270 درجة)
+                const prizeIndex = Math.floor(((360 - actualDegrees + 270) % 360) / (360 / segments));
+                const winningPrize = wheelPrizes[prizeIndex];
+
+                // عرض النتيجة للعميل
+                document.getElementById('prize-text').innerText = winningPrize;
+                const encodedMsg = encodeURIComponent(`أهلاً وكالة القائد، لقد قمت بتدوير عجلة الحظ في موقعكم وفزت بجائزة: [ ${winningPrize} ] 🎉`);
+                document.getElementById('prize-wa-btn').href = `https://wa.me/201008145271?text=${encodedMsg}`;
+                
+                document.getElementById('prize-modal').classList.add('active');
+            }, 4000);
+        });
+
+        // إغلاق منبثق الفوز عند النقر في أي مكان خارج المحتوى
+        document.getElementById('prize-modal').addEventListener('click', function(e) {
+            if(e.target === this) this.classList.remove('active');
+        });
+
+        // بناء وعرض محتوى الواجهة برمجياً بناء على مصفوفة البيانات
+        function renderInterface() {
+            // تحديث بطاقات الضرب والسحب الأساسية
+            document.getElementById('display-multiplier-price').innerText = `سعر الضرب للمليون: ${globalPrices.multiplierPrice} ج`;
+            document.getElementById('display-withdraw-price').innerText = `سعر سحب الدولار: ${globalPrices.withdrawPrice} ج`;
+
+            // تحديث شبكة أسعار الشحن
+            const container = document.getElementById('prices-container');
+            container.innerHTML = '';
+            globalPrices.chargePackages.forEach(pkg => {
+                const card = document.createElement('div');
+                card.className = 'price-card';
+                card.innerHTML = `
+                    <span class="coins-val">🔥 ${pkg.coins.toLocaleString()} كوين</span>
+                    <span class="money-val">${pkg.price} ج</span>
+                `;
+                container.appendChild(card);
+            });
+
+            // تحديث الخيارات داخل حاسبة الميزانية التقديرية
+            const calcSelect = document.getElementById('calc-select');
+            calcSelect.innerHTML = '';
+            globalPrices.chargePackages.forEach((pkg, index) => {
+                const opt = document.createElement('option');
+                opt.value = index;
+                opt.innerText = `${pkg.price} جنيه مصري`;
+                calcSelect.appendChild(opt);
+            });
+            updateCalculatedValue();
+
+            // تحديث الخيارات داخل لوحة إدارة المسؤول
+            const adminSelect = document.getElementById('admin-charge-select');
+            adminSelect.innerHTML = '';
+            globalPrices.chargePackages.forEach((pkg, index) => {
+                const opt = document.createElement('option');
+                opt.value = index;
+                opt.innerText = `فئة ${pkg.coins.toLocaleString()} كوين (الحالي: ${pkg.price} ج)`;
+                adminSelect.appendChild(opt);
+            });
+            if(globalPrices.chargePackages.length > 0) {
+                document.getElementById('admin-charge-price').value = globalPrices.chargePackages[0].price;
+            }
+        }
+
+        // تحديث مخرجات حاسبة الميزانية اللحظية للزائر
+        function updateCalculatedValue() {
+            const select = document.getElementById('calc-select');
+            if(select.value !== "") {
+                const pkg = globalPrices.chargePackages[select.value];
+                document.getElementById('calc-output').innerText = pkg.coins.toLocaleString();
+            }
+        }
+        document.getElementById('calc-select').addEventListener('change', updateCalculatedValue);
+
+        // ربط الخيارات في لوحة المسؤول لملء سعر الفئة تلقائياً عند التبديل
+        document.getElementById('admin-charge-select').addEventListener('change', function() {
+            const pkg = globalPrices.chargePackages[this.value];
+            document.getElementById('admin-charge-price').value = pkg.price;
+        });
+
+        // دوال التحكم والمطالبة بالرقم السرّي للوحة الإدارية
+        function openAdminAuth() {
+            document.getElementById('admin-pin').value = '';
+            document.getElementById('auth-error').style.display = 'none';
+            document.getElementById('auth-modal').classList.add('active');
+        }
+
+        function closeAuthModal() {
+            document.getElementById('auth-modal').classList.remove('active');
+        }
+
+        function verifyAdminPin() {
+            const pinInput = document.getElementById('admin-pin').value;
+            // التحقق من الرمز السري المطلوب: 131184
+            if (pinInput === "131184") {
+                closeAuthModal();
+                // تعبئة حقول المدخلات الإدارية بالقيم الحالية قبل الفتح
+                document.getElementById('input-multiplier').value = globalPrices.multiplierPrice;
+                document.getElementById('input-withdraw').value = globalPrices.withdrawPrice;
+                
+                const currentIdx = document.getElementById('admin-charge-select').value || 0;
+                if(globalPrices.chargePackages[currentIdx]) {
+                    document.getElementById('admin-charge-price').value = globalPrices.chargePackages[currentIdx].price;
+                }
+                
+                document.getElementById('admin-modal').classList.add('active');
+            } else {
+                document.getElementById('auth-error').style.display = 'block';
+            }
+        }
+
+        function closeAdminModal() {
+            document.getElementById('admin-modal').classList.remove('active');
+        }
+
+        // حفظ البيانات الإدارية وتحديث شاشة الزوار لحظياً
+        function saveAdminData() {
+            // حفظ أسعار الضرب والسحب
+            globalPrices.multiplierPrice = parseInt(document.getElementById('input-multiplier').value) || 0;
+            globalPrices.withdrawPrice = parseInt(document.getElementById('input-withdraw').value) || 0;
+
+            // حفظ قيمة فئة الشحن المحددة حالياً
+            const selectedPkgIdx = document.getElementById('admin-charge-select').value;
+            const newPrice = parseInt(document.getElementById('admin-charge-price').value) || 0;
+            if(globalPrices.chargePackages[selectedPkgIdx]) {
+                globalPrices.chargePackages[selectedPkgIdx].price = newPrice;
+            }
+
+            // إعادة ترتيب حزم الشحن تصاعدياً لضمان سلاسة العرض إذا تم تغيير الترتيب المالي
+            globalPrices.chargePackages.sort((a, b) => a.coins - b.coins);
+
+            // إعادة بناء واجهة المستخدم بالكامل بالأسعار الجديدة
+            renderInterface();
+            closeAdminModal();
+            alert("✨ تم تحديث وحفظ كافة الأسعار الجديدة على الموقع بنجاح!");
+        }
+
+        // التشغيل الأولي للواجهة عند تحميل الصفحة
+        renderInterface();
+    </script>
+</body>
+</html>
